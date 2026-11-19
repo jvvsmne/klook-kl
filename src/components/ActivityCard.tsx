@@ -114,7 +114,7 @@ export function ActivityCard({
         </div>
 
         {/* Price & Action Footer */}
-        <div className="mt-auto pt-3.5 border-t border-[#F1F3F5] flex items-end justify-between gap-3">
+        <div className="mt-auto pt-3.5 border-t border-[#F1F3F5] flex items-center justify-between gap-3">
           <div className="min-w-0">
             {activity.originalPriceSgd && (
               <div className="text-xs text-[#8C939D] line-through tabular-nums leading-tight">
@@ -132,9 +132,9 @@ export function ActivityCard({
           <button
             type="button"
             onClick={() => onSelect(activity)}
-            className="px-4 py-2 text-xs font-semibold text-white bg-[#FF5B00] rounded-lg hover:bg-[#E04F00] active:scale-[0.98] transition-[background-color,transform] duration-150 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF5B00]"
+            className="px-5 py-2.5 text-sm font-bold text-white bg-[#FF5B00] rounded-xl shadow-[0_4px_12px_rgba(255,91,0,0.28)] hover:bg-[#E04F00] hover:shadow-[0_6px_16px_rgba(255,91,0,0.36)] active:scale-[0.98] transition-[background-color,box-shadow,transform] duration-150 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF5B00]"
           >
-            Select
+            Book now
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Check, Clock, MapPin, Minus, Plus, ShieldCheck, Star, X } from 'lucide-react';
+import { Calendar, Check, CheckCircle2, Clock, MapPin, Minus, Plus, ShieldCheck, Star, X, Zap } from 'lucide-react';
 import {
   Activity,
   CurrencyCode,
@@ -37,12 +37,14 @@ export function ActivityDetailModal({
   const [selectedPkgId, setSelectedPkgId] = useState<string>('');
   const [date, setDate] = useState<string>(getDefaultDate);
   const [quantity, setQuantity] = useState<number>(2);
+  const [oneClickRef, setOneClickRef] = useState<string | null>(null);
 
   useEffect(() => {
     if (activity && activity.packages.length > 0) {
       setSelectedPkgId(activity.packages[0].id);
       setQuantity(2);
       setDate(getDefaultDate());
+      setOneClickRef(null);
     }
   }, [activity]);
 
@@ -69,6 +71,10 @@ export function ActivityDetailModal({
       date,
       quantity,
     });
+  };
+
+  const handleOneClickBook = () => {
+    setOneClickRef(`KL-${Math.floor(100000 + Math.random() * 900000)}`);
   };
 
   return (
@@ -290,30 +296,75 @@ export function ActivityDetailModal({
                   </div>
                 </div>
 
-                {/* Subtotal & CTA */}
-                <div className="pt-3 border-t border-[#E5E7EB] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-[#4B5563]">Total</span>
-                    <span className="font-display text-xl font-bold text-[#1E2022] tabular-nums">
-                      {formatPrice(totalSgd, currency)}
-                    </span>
+                {/* Subtotal & CTAs */}
+                {oneClickRef ? (
+                  <div className="pt-3 border-t border-[#E5E7EB] space-y-4">
+                    <div className="bg-white border border-[#A7F3D0] rounded-xl p-4 space-y-2.5">
+                      <div className="flex items-center gap-2 text-[#059669]">
+                        <CheckCircle2 className="w-5 h-5 shrink-0" aria-hidden="true" />
+                        <span className="text-sm font-bold">1-click booking confirmed</span>
+                      </div>
+                      <div className="text-xs text-[#4B5563] space-y-1 tabular-nums">
+                        <div>
+                          Booking reference:{' '}
+                          <span className="font-semibold text-[#1E2022]">#{oneClickRef}</span>
+                        </div>
+                        <div>
+                          {selectedPackage.name} · {quantity}{' '}
+                          {quantity === 1 ? 'traveler' : 'travelers'}
+                        </div>
+                        <div>
+                          Date: {date} · Total:{' '}
+                          <span className="font-bold text-[#1E2022]">
+                            {formatPrice(totalSgd, currency)}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-[#0F766E] font-medium">
+                        QR e-voucher issued for immediate entry.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="w-full py-3 px-4 rounded-xl bg-[#1E2022] text-white font-semibold text-sm hover:bg-[#32363A] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1E2022]"
+                    >
+                      Done
+                    </button>
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full py-3 px-4 rounded-xl bg-[#FF5B00] text-white font-semibold text-sm hover:bg-[#E04F00] active:scale-[0.99] transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF5B00]"
-                  >
-                    Add to booking bag
-                  </button>
-                  <p className="text-[11px] text-center text-[#6B7280]">
-                    {activity.instantConfirmation
-                      ? 'Instant e-voucher confirmation upon checkout'
-                      : 'Confirmed within 24 hours'}
-                    {' · '}
-                    {activity.freeCancellation
-                      ? 'Free cancellation up to 24h prior'
-                      : 'Non-refundable timed slot'}
-                  </p>
-                </div>
+                ) : (
+                  <div className="pt-3 border-t border-[#E5E7EB] space-y-2.5">
+                    <div className="flex items-center justify-between pb-1">
+                      <span className="text-sm font-medium text-[#4B5563]">Total</span>
+                      <span className="font-display text-xl font-bold text-[#1E2022] tabular-nums">
+                        {formatPrice(totalSgd, currency)}
+                      </span>
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full py-2.5 px-4 rounded-xl border border-[#FF5B00] bg-white text-[#FF5B00] font-semibold text-sm hover:bg-[#FFF5F0] active:scale-[0.99] transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF5B00]"
+                    >
+                      Add to booking bag
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleOneClickBook}
+                      className="w-full py-3.5 px-5 rounded-xl bg-[#FF5B00] text-white font-bold text-[15px] shadow-[0_6px_18px_rgba(255,91,0,0.32)] hover:bg-[#E04F00] hover:shadow-[0_8px_22px_rgba(255,91,0,0.40)] active:scale-[0.99] transition-[background-color,box-shadow,transform] duration-150 flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF5B00]"
+                    >
+                      <Zap className="w-4 h-4 fill-white" aria-hidden="true" />
+                      <span>Book now with 1-click</span>
+                    </button>
+                    <p className="text-[11px] text-center text-[#6B7280] pt-0.5">
+                      {activity.instantConfirmation
+                        ? 'Instant e-voucher confirmation upon checkout'
+                        : 'Confirmed within 24 hours'}
+                      {' · '}
+                      {activity.freeCancellation
+                        ? 'Free cancellation up to 24h prior'
+                        : 'Non-refundable timed slot'}
+                    </p>
+                  </div>
+                )}
               </form>
             </div>
           </div>
